@@ -9,8 +9,18 @@ from backend.app.core.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("\n========== REGISTERED ROUTES ==========")
+
+    for route in app.routes:
+        if hasattr(route, "path"):
+            print(route.path)
+
+    print("=======================================\n")
+
     print("🚀 HireSense Backend Started")
+
     yield
+
     print("🛑 HireSense Backend Stopped")
 
 
