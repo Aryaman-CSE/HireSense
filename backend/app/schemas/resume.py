@@ -7,3 +7,4 @@ class ResumeUploadResponse(BaseModel):
     original_filename: str
     content_type: str
     size: int
+    text_preview: str

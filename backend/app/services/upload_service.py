@@ -4,6 +4,8 @@ import shutil
 
 from fastapi import UploadFile
 
+from backend.app.services.extraction_service import ExtractionService
+
 UPLOAD_DIR = Path("backend/uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -25,10 +27,15 @@ class UploadService:
         with destination.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
+        extracted_text = ExtractionService.extract_text(str(destination))
+
+        preview = extracted_text[:500]
+
         return {
             "id": filename.split(".")[0],
             "filename": filename,
             "original_filename": file.filename,
             "content_type": file.content_type,
             "size": destination.stat().st_size,
+            "text_preview": preview,
         }
