@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Any
+
+from pydantic import BaseModel, Field
 
 
 class Candidate(BaseModel):
@@ -10,20 +12,21 @@ class Candidate(BaseModel):
 
 
 class ResumeAIResponse(BaseModel):
+
     candidate: Candidate
 
     summary: str | None = None
 
-    technical_skills: list[str] = []
+    technical_skills: list[str] = Field(default_factory=list)
 
-    soft_skills: list[str] = []
+    soft_skills: list[str] = Field(default_factory=list)
 
-    education: list = []
+    education: list[Any] = Field(default_factory=list)
 
-    experience: list = []
+    experience: list[Any] = Field(default_factory=list)
 
-    projects: list = []
+    projects: list[Any] = Field(default_factory=list)
 
-    certifications: list = []
+    certifications: list[Any] = Field(default_factory=list)
 
-    languages: list[str] = []
+    languages: list[str] = Field(default_factory=list)

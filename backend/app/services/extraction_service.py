@@ -5,7 +5,6 @@ from docx import Document
 
 
 class ExtractionService:
-
     @staticmethod
     def extract_text(file_path: str) -> str:
         extension = Path(file_path).suffix.lower()
@@ -16,26 +15,29 @@ class ExtractionService:
         if extension == ".docx":
             return ExtractionService._extract_docx(file_path)
 
-        raise ValueError("Unsupported file type.")
+        raise ValueError("Unsupported file format.")
 
     @staticmethod
     def _extract_pdf(file_path: str) -> str:
-        text = ""
+        text = []
 
         with pdfplumber.open(file_path) as pdf:
             for page in pdf.pages:
                 page_text = page.extract_text()
 
                 if page_text:
-                    text += page_text + "\n"
+                    text.append(page_text)
 
-        return text
+        return "\n".join(text).strip()
 
     @staticmethod
     def _extract_docx(file_path: str) -> str:
         document = Document(file_path)
 
-        return "\n".join(
-            paragraph.text
-            for paragraph in document.paragraphs
-        )
+        paragraphs = []
+
+        for paragraph in document.paragraphs:
+            if paragraph.text.strip():
+                paragraphs.append(paragraph.text.strip())
+
+        return "\n".join(paragraphs).strip()

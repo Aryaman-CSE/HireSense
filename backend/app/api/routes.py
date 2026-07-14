@@ -1,9 +1,11 @@
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from backend.app.schemas.resume import ResumeUploadResponse
+from backend.app.schemas.upload import UploadResponse
 from backend.app.services.upload_service import UploadService
 
 router = APIRouter()
+
+upload_service = UploadService()
 
 
 @router.get("/")
@@ -11,6 +13,7 @@ async def root():
     return {
         "application": "HireSense",
         "status": "running",
+        "version": "0.1.0",
     }
 
 
@@ -21,17 +24,33 @@ async def health():
     }
 
 
+@router.get("/ai/health")
+async def ai_health():
+    return {
+        "provider": "Groq",
+        "status": "connected",
+        "model": "llama-3.3-70b-versatile",
+    }
+
+
 @router.post(
     "/resumes/upload",
-    response_model=ResumeUploadResponse,
+    response_model=UploadResponse,
 )
-async def upload_resume(file: UploadFile = File(...)):
-
+async def upload_resume(
+    file: UploadFile = File(...)
+):
     try:
-        return await UploadService.save_resume(file)
+        return await upload_service.process_resume(file)
 
     except ValueError as e:
         raise HTTPException(
             status_code=400,
+            detail=str(e),
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
             detail=str(e),
         )
