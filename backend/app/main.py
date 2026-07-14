@@ -7,7 +7,10 @@ from backend.app.api.routes import router
 from backend.app.core.config import settings
 
 from backend.app.db.database import Base, engine
-from backend.app.db import models
+
+# Import database models so SQLAlchemy registers them
+from backend.app.db.models import ResumeRecord
+from backend.app.db.job_models import JobRecord
 
 
 @asynccontextmanager
