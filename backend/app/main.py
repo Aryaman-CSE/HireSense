@@ -6,14 +6,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.api.routes import router
 from backend.app.core.config import settings
 
+from backend.app.db.database import Base, engine
+from backend.app.db import models
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+
+    Base.metadata.create_all(bind=engine)
+
     print("\n========== REGISTERED ROUTES ==========")
 
     for route in app.routes:
-        if hasattr(route, "path"):
-            print(route.path)
+        print(route.path)
 
     print("=======================================\n")
 
